@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Employee detail page</title>
+
+
+</head>
+<body>
+
+<div class="card" ng-app="myApp" ng-controller="myController">
+    <h5 class="card-header"><a href="home.html">Home</a> <span style="margin-left: 10px;">Employee Details</span>
+    </h5>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-2">
+                <img src="http://www.iconarchive.com/download/i6106/custom-icon-design/pretty-office-4/man-2.ico"
+                     width="100rem" height="100rem">
+            </div>
+            <div class="col-sm-10">
+                <p>First Name: {{employee.firstName}}</p>
+                <p>Last Name: {{employee.lastName}}</p>
+                <hr style="margin-top: 1rem; margin-top: 1rem; border: 0; border-top: 1px solid rgba(0, 0, 0, 0.1);">
+                <br>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <p>Manager: {{manager.firstName}} {{manager.lastName}}</p>
+                    </div>
+                    <div class="col-sm-5">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reportModal">
+                            Report
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="reportModal" tabindex="-1" role="dialog"
+                             aria-labelledby="reportModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Report</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form ng-submit="sendReport()" method="post">
+                                            <div class="form-group">
+                                                <label for="reportText"></label>
+                                                <input type="text" name="text" class="form-control" id="reportText" rows="3"
+                                                          placeholder="Enter Text Here">
+                                            </div>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">Save changes and send</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <h1>My Tasks</h1>
+            <div class="card-body">
+                <table class="table table-striped table-hover" id="table1">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th data-field="name">Task</th>
+                        <th data-field="stargazers_count">Date</th>
+                        <th data-field="forks_count">Due Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="task in employee.tasks">
+                        <td>{{task.text}}</td>
+                        <td>{{formatDate(task.date)}}</td>
+                        <td>{{formatDate(task.dueDate)}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h1>My Subordinates</h1>
+        <div class="card-body">
+            <table class="table table-striped table-hover" id="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th data-field="name">First Name</th>
+                    <th data-field="stargazers_count">Last Name</th>
+                    <th data-field="forks_count">position</th>
+                    <th data-field="forks_count">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="sub in employee.subordinates">
+                    <td>{{sub.firstName}}</td>
+                    <td>{{sub.lastName}}</td>
+                    <td>{{sub.position}}</td>
+                    <td>
+                        <button type="button" ng-click="setId(this)" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#taskModal">
+                            Assign Task
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog"
+         aria-labelledby="taskModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="assignTask()" method="post">
+                        <div class="form-group">
+                            <label for="taskDueDate">Enter Due Date</label>
+                            <input type="date" name="text" class="form-control" id="taskDueDate">
+                            <label for="taskText">Task Details</label>
+                            <input type="text" name="text" class="form-control" id="taskText" rows="3"
+                                   placeholder="Enter Text Here">
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">Save changes and send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script>
+    var app = angular.module("myApp", []);
+    app.controller('myController', function ($scope,$http) {
+        $scope.employee = JSON.parse(sessionStorage.getItem('selectedEmp'));
+        $scope.formatDate = function(date){
+            return new Date(date);
+        }
+        var manage = sessionStorage.getItem('contextManager');
+        if(manage == "undefined"){
+            $scope.manager = 'manager not set';
+        }
+        else{
+            $scope.manager = JSON.parse(manage);
+        }
+        $scope.sendReport = function () {
+            var managerId = $scope.manager.id;
+            $http.post("http://localhost:8080/"+managerId+"/sendReport",{
+                text: $('#taskText').val(),
+                date: Date.now()
+            }).then(function(){
+                $('#reportText').val('');
+            })
+        };
+        $scope.setId = function(emp){
+            sessionStorage.setItem('employeeAssigned',emp.sub.id);
+        };
+        $scope.assignTask = function () {
+            var empAssignId = sessionStorage.getItem('employeeAssigned');
+            $http.post("http://localhost:8080/"+empAssignId+"/assignTask",{
+                text: $('#taskText').val(),
+                date: Date.now(),
+                dueDate: new Date($('#taskDueDate').val()).getTime()
+            }).then(function(){
+                $('#taskDueDate').val('');
+                $('#taskText').val('');
+            })
+        };
+    });
+
+</script>
+<script src="scripts/utils.js"></script>
+</body>
+</html>
